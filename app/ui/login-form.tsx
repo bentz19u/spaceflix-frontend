@@ -16,11 +16,13 @@ export default function LoginForm() {
       body: JSON.stringify({ email, password }),
     });
 
-    if (response.ok) {
-      // router.push('/profile');
-    } else {
-      // Handle errors
-    }
+    console.log(response);
+
+    // if (response.ok) {
+    //   // router.push('/profile');
+    // } else {
+    //   // Handle errors
+    // }
   }
 
   return (
