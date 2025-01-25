@@ -1,7 +1,8 @@
-import { authorizedFetch } from '@/app/lib/authorized-fetch-lib';
+import { AuthorizedFetcher } from '@/app/lib/authorized-fetch-lib';
 
 export async function GET(req: Request) {
-  const response = await authorizedFetch(
+  const fetcher = new AuthorizedFetcher();
+  const response = await fetcher.fetch(
     'http://localhost:3000/test-access-token',
     {
       method: 'GET',
