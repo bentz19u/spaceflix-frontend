@@ -10,13 +10,6 @@ $ npm install
 
 ## Locally
 
-Then, build the project with:
-
-```
-npm install
-npm run build
-```
-
 You can run the development server with:
 
 ```

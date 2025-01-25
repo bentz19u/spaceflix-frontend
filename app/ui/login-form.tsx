@@ -25,6 +25,15 @@ export default function LoginForm() {
     // }
   }
 
+  async function handleClick() {
+    const response = await fetch('/api/auth/test-access-token', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    console.log(response);
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -57,6 +66,9 @@ export default function LoginForm() {
         <label htmlFor='rememberMe'>Remember me</label>
       </div>
       <button type='submit'>Login</button>
+      <button type='button' onClick={handleClick}>
+        Test Access token
+      </button>
     </form>
   );
 }
