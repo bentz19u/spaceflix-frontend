@@ -8,7 +8,5 @@ export async function GET(req: Request) {
     }
   );
 
-  const result = await response.json();
-
-  return new Response(JSON.stringify(result), { status: response.status });
+  return new Response(JSON.stringify(response), { status: response.status });
 }
