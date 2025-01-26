@@ -20,7 +20,7 @@ export class AuthorizedFetcher {
       return response;
     } else if (response.status === 401) {
       // unauthorized, we will refresh tokens
-      const refreshToken = this.cookieStore.get('refreshToken');
+      const refreshToken = this.cookieStore.get('refreshToken')?.value;
       if (refreshToken) {
         const success = await this.refresh(refreshToken);
         // retry the original request
