@@ -1,6 +1,7 @@
 import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { LoginResponse } from '@/app/api/auth/login/route';
 import { cookies } from 'next/headers';
+import { ErrorResponse } from '@/app/lib/global-backend-api-response';
 
 interface RefreshResponse {
   accessToken: string;
@@ -14,19 +15,22 @@ export class AuthorizedFetcher {
     this.cookieStore = await cookies();
     const response = await this.doFetch(url, options);
 
+    // all good
     if (response.ok) {
       return response;
     } else if (response.status === 401) {
-      const refreshToken = this.cookieStore.get('refreshToken')?.value;
+      // unauthorized, we will refresh tokens
+      const refreshToken = this.cookieStore.get('refreshToken');
       if (refreshToken) {
-        await this.refresh(refreshToken);
-
-        // Retry the original request
-        return this.doFetch(url, options);
+        const success = await this.refresh(refreshToken);
+        // retry the original request
+        if (success) {
+          return this.doFetch(url, options);
+        }
       }
     }
 
-    return response; // Return error response
+    return response; // return error response
   }
 
   private async doFetch(url: string, options: RequestInit): Promise<Response> {
@@ -43,7 +47,7 @@ export class AuthorizedFetcher {
     return fetch(url, { ...options, headers });
   }
 
-  private async refresh(refreshToken: string): Promise<void> {
+  private async refresh(refreshToken: string): Promise<boolean> {
     const response = await fetch('http://localhost:3000/refresh', {
       method: 'POST',
       headers: {
@@ -52,8 +56,24 @@ export class AuthorizedFetcher {
       },
     });
 
-    const tokens = (await response.json()) as RefreshResponse;
-    AuthorizedFetcher.assignTokens(tokens, this.cookieStore);
+    const result = await response.json();
+
+    if (this.isErrorResponse(result)) {
+      this.forceLogout();
+      return false;
+    }
+
+    AuthorizedFetcher.assignTokens(result as RefreshResponse, this.cookieStore);
+    return true;
+  }
+
+  private forceLogout() {
+    this.cookieStore.delete('accessToken');
+    this.cookieStore.delete('refreshToken');
+  }
+
+  private isErrorResponse(result: any): result is ErrorResponse {
+    return result && 'error' in result && typeof result.error === 'object';
   }
 
   // also used in the Login endpoint
