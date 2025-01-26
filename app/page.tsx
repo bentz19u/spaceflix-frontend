@@ -1,8 +1,6 @@
 import LoginForm from '@/app/ui/login-form';
 
 export default async function Home() {
-  // await login('daniel.bentz@test.com', 'password', true);
-
   return (
     <>
       <main className='flex h-screen items-center justify-center bg-black'>

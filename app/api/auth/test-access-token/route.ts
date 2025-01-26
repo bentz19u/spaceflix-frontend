@@ -9,5 +9,9 @@ export async function GET(req: Request) {
     }
   );
 
-  return new Response(JSON.stringify(response), { status: response.status });
+  // AuthorizedFetcher can return a header for redirection, test it later with real case
+  return new Response(JSON.stringify(response), {
+    status: response.status,
+    headers: response.headers,
+  });
 }

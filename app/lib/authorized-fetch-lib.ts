@@ -22,11 +22,27 @@ export class AuthorizedFetcher {
       // unauthorized, we will refresh tokens
       const refreshToken = this.cookieStore.get('refreshToken')?.value;
       if (refreshToken) {
-        const success = await this.refresh(refreshToken);
-        // retry the original request
-        if (success) {
-          return this.doFetch(url, options);
+        try {
+          const success = await this.refresh(refreshToken);
+          // retry the original request
+          if (success) {
+            return this.doFetch(url, options);
+          }
+        } catch (error: any) {
+          // return the redirection to login
+          if (error.message === 'Unauthorized - Redirect to login') {
+            // Perform server-side redirection
+            return new Response(null, {
+              status: 302,
+              headers: { Location: '/login' },
+            });
+          }
         }
+      } else {
+        return new Response(null, {
+          status: 302,
+          headers: { Location: '/login' },
+        });
       }
     }
 
@@ -70,6 +86,9 @@ export class AuthorizedFetcher {
   private forceLogout() {
     this.cookieStore.delete('accessToken');
     this.cookieStore.delete('refreshToken');
+
+    // throw an error or signal for redirection
+    throw new Error('Unauthorized - Redirect to login');
   }
 
   private isErrorResponse(result: any): result is ErrorResponse {
