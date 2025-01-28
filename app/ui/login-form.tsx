@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent } from 'react';
+import { clientAuthorizedFetcher } from '@/app/lib/client-authorized-fetch-lib';
 
 export default function LoginForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -25,13 +26,12 @@ export default function LoginForm() {
     // }
   }
 
-  async function handleClick() {
-    const response = await fetch('/api/auth/test-access-token', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    console.log(response);
+  async function handleRouteHandlerClick() {
+    // for test purpose
+    const data = await clientAuthorizedFetcher(
+      '/api/auth/test-access-token',
+      'GET'
+    );
   }
 
   return (
@@ -39,7 +39,7 @@ export default function LoginForm() {
       onSubmit={handleSubmit}
       className='flex h-full flex-col justify-between pb-20 pt-20'
     >
-      <h1>Sign In</h1>
+      <h1 className='text-white'>Sign In</h1>
       <input
         type='email'
         name='email'
@@ -57,17 +57,25 @@ export default function LoginForm() {
         required
       />
       <div>
-        <input
-          type='checkbox'
-          name='rememberMe'
-          placeholder='Password'
-          defaultChecked={true}
-        />
-        <label htmlFor='rememberMe'>Remember me</label>
+        <label htmlFor='rememberMe' className='text-white'>
+          <input
+            type='checkbox'
+            name='rememberMe'
+            placeholder='Password'
+            defaultChecked={true}
+          />
+          Remember me
+        </label>
       </div>
-      <button type='submit'>Login</button>
-      <button type='button' onClick={handleClick}>
-        Test Access token
+      <button type='submit' className='text-white'>
+        Login
+      </button>
+      <button
+        type='button'
+        className='text-white'
+        onClick={handleRouteHandlerClick}
+      >
+        Test Access token (By route handler)
       </button>
     </form>
   );
