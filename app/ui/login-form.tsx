@@ -8,13 +8,15 @@ export default function LoginForm() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+    console.log(formData);
     const email = formData.get('email');
     const password = formData.get('password');
+    const rememberMe = formData.get('rememberMe') == 'on';
 
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, rememberMe }),
     });
 
     console.log(response);
@@ -36,48 +38,72 @@ export default function LoginForm() {
 
   return (
     <form
+      id='login-form'
       onSubmit={handleSubmit}
-      className='flex h-full flex-col justify-between py-16'
+      className='flex h-full flex-col justify-between py-10'
     >
-      <h1>Sign In</h1>
-      <div className='flex flex-col'>
-        <label htmlFor='email'>Email</label>
-        <input
-          type='email'
-          name='email'
-          placeholder='Email'
-          defaultValue='daniel.bentz@test.com'
-          className='text-black'
-          required
-        />
+      <header className='mb-5 min-h-10'>Sign In</header>
+
+      <div className='flex flex-grow-[0.5] flex-col justify-between'>
+        <div className='relative'>
+          <input
+            type='text'
+            name='email'
+            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pb-2.5 pt-5 text-sm text-white focus:ring-2 focus:ring-white'
+            defaultValue='daniel.bentz@test.com'
+            placeholder=' '
+          />
+          <label
+            htmlFor='email'
+            className='absolute start-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500'
+          >
+            Email
+          </label>
+        </div>
+
+        <div className='relative'>
+          <input
+            type='password'
+            name='password'
+            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pb-2.5 pt-5 text-sm text-white focus:ring-2 focus:ring-white'
+            defaultValue='password'
+            placeholder=' '
+          />
+          <label
+            htmlFor='password'
+            className='absolute start-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500'
+          >
+            Password
+          </label>
+        </div>
+
+        <div>
+          <input
+            type='checkbox'
+            name='rememberMe'
+            placeholder='Password'
+            defaultChecked={true}
+            className='h-4 w-4 cursor-pointer rounded-sm border-white bg-black text-white hover:ring-1 hover:ring-white'
+          />
+          <label htmlFor='rememberMe' className='ms-2'>
+            Remember me
+          </label>
+        </div>
+        <button type='submit' className='min-h-10 rounded-lg bg-red-600'>
+          Sign In
+        </button>
       </div>
 
-      <div className='flex flex-col'>
-        <label htmlFor='password'>Password</label>
-        <input
-          type='password'
-          name='password'
-          placeholder='Password'
-          defaultValue='password'
-          className='text-black'
-          required
-        />
-      </div>
-      <div>
-        <input
-          type='checkbox'
-          name='rememberMe'
-          placeholder='Password'
-          defaultChecked={true}
-        />
-        <label htmlFor='rememberMe'>Remember me</label>
-      </div>
-      <button type='submit' className='bg-red-600'>
-        Sign In
-      </button>
-      <button type='button' onClick={handleRouteHandlerClick}>
-        Test Access token (By route handler)
-      </button>
+      <footer className='mt-5 min-h-10'>
+        <p>New to Spaceflix? Sign up now.</p>
+        <button
+          type='button'
+          onClick={handleRouteHandlerClick}
+          className='mt-4'
+        >
+          Test Access token (By route handler)
+        </button>
+      </footer>
     </form>
   );
 }
