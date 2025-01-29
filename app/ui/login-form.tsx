@@ -49,7 +49,7 @@ export default function LoginForm() {
           <input
             type='text'
             name='email'
-            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pb-2.5 pt-5 text-sm text-white focus:ring-2 focus:ring-white'
+            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white'
             defaultValue='daniel.bentz@test.com'
             placeholder=' '
           />
@@ -65,7 +65,7 @@ export default function LoginForm() {
           <input
             type='password'
             name='password'
-            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pb-2.5 pt-5 text-sm text-white focus:ring-2 focus:ring-white'
+            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white'
             defaultValue='password'
             placeholder=' '
           />

@@ -6,8 +6,7 @@ export async function clientAuthorizedFetcher(url: string, method: string) {
 
   if (response.ok) {
     // token is valid, process the response as needed
-    const data = await response.json();
-    return data;
+    return response;
   } else if (response.status === 401) {
     // unauthorized, redirect to login
     const redirectUrl = response.headers.get('Location');
