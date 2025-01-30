@@ -139,6 +139,9 @@ export class AuthorizedFetcher {
     cookieStore.delete('accessToken');
     cookieStore.delete('refreshToken');
 
+    AuthorizedFetcher.accessToken = null;
+    AuthorizedFetcher.refreshToken = null;
+
     // reject all pending requests with an error to expire them
     this.expirePendingRequests();
 

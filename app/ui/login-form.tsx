@@ -36,8 +36,8 @@ export default function LoginForm() {
 
     const data = await Promise.all([
       clientAuthorizedFetcher('/api/auth/test-access-token', 'GET'),
-      clientAuthorizedFetcher('/api/auth/test-access-token', 'GET'),
-      clientAuthorizedFetcher('/api/auth/test-access-token', 'GET'),
+      clientAuthorizedFetcher('/api/auth/test-access-token2', 'GET'),
+      clientAuthorizedFetcher('/api/auth/test-access-token3', 'GET'),
     ]);
   }
 
