@@ -29,8 +29,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <main className='text-white'>{children}</main>
+        <div className="absolute inset-0 h-full bg-[url('/background-main-img.png')] bg-cover">
+          <div className='absolute inset-0 bg-black opacity-50'></div>{' '}
+        </div>
+        <div className='relative z-10'>
+          <Header />
+          <main className='text-white'>{children}</main>
+        </div>
       </body>
     </html>
   );

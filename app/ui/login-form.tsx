@@ -48,8 +48,9 @@ export default function LoginForm() {
         <div className='relative'>
           <input
             type='text'
+            id='email'
             name='email'
-            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white'
+            className='block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white'
             defaultValue='daniel.bentz@test.com'
             placeholder=' '
           />
@@ -64,8 +65,9 @@ export default function LoginForm() {
         <div className='relative'>
           <input
             type='password'
+            id='password'
             name='password'
-            className='peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white'
+            className='block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white'
             defaultValue='password'
             placeholder=' '
           />
@@ -80,16 +82,20 @@ export default function LoginForm() {
         <div>
           <input
             type='checkbox'
+            id='rememberMe'
             name='rememberMe'
             placeholder='Password'
             defaultChecked={true}
             className='h-4 w-4 cursor-pointer rounded-sm border-white bg-black text-white hover:ring-1 hover:ring-white'
           />
-          <label htmlFor='rememberMe' className='ms-2'>
+          <label htmlFor='rememberMe' className='ms-2 cursor-pointer'>
             Remember me
           </label>
         </div>
-        <button type='submit' className='min-h-10 rounded-lg bg-red-600'>
+        <button
+          type='submit'
+          className='min-h-10 cursor-pointer rounded-lg bg-red-600'
+        >
           Sign In
         </button>
       </div>
@@ -99,7 +105,7 @@ export default function LoginForm() {
         <button
           type='button'
           onClick={handleRouteHandlerClick}
-          className='mt-4'
+          className='mt-4 cursor-pointer'
         >
           Test Access token (By route handler)
         </button>
