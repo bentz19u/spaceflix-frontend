@@ -9,6 +9,7 @@ interface RefreshResponse {
 }
 
 export class AuthorizedFetcher {
+  private static accessToken: any;
   private static refreshToken: any;
   private static instance: AuthorizedFetcher | null = null;
   private static isRefreshing = false;
@@ -30,12 +31,11 @@ export class AuthorizedFetcher {
 
   // main method of this class, it will do the query using fetch()
   // but also refresh the tokens if needed
-  async fetch(url: string, options: RequestInit = {}): Promise<Response> {
+  async process(url: string, options: RequestInit = {}): Promise<Response> {
     const response = await this.doFetch(url, options);
 
     // all good
-    if (response.ok) return response;
-    else if (response.status === 401) {
+    if (response.status === 401) {
       // access token has expired, we will check the refresh token
       if (!AuthorizedFetcher.isRefreshing) {
         AuthorizedFetcher.isRefreshing = true;
@@ -54,32 +54,35 @@ export class AuthorizedFetcher {
         } finally {
           AuthorizedFetcher.isRefreshing = false;
         }
-      } else {
-        // if refresh is already in progress, queue the current request to be retried after refresh
-        return new Promise<Response>((resolve, reject) => {
-          AuthorizedFetcher.pendingRequests.push({
-            url,
-            options,
-            resolve,
-            reject,
-          });
-        });
       }
+
+      return new Promise<Response>((resolve, reject) => {
+        AuthorizedFetcher.pendingRequests.push({
+          url,
+          options,
+          resolve,
+          reject,
+        });
+      });
     }
 
     return response; // return error response
   }
 
   private async doFetch(url: string, options: RequestInit): Promise<Response> {
+    if (!AuthorizedFetcher.accessToken) {
+      // force a re-read of cookies here to get the latest refresh token
+      const cookieStore = await cookies();
+      AuthorizedFetcher.accessToken = cookieStore?.get('accessToken')?.value;
+    }
+
     const headers: any = {
       ...options.headers,
       'Content-Type': 'application/json',
     };
 
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
-    if (accessToken) {
-      headers['Authorization'] = `Bearer ${accessToken}`;
+    if (AuthorizedFetcher.accessToken) {
+      headers['Authorization'] = `Bearer ${AuthorizedFetcher.accessToken}`;
     }
 
     return fetch(url, { ...options, headers });
@@ -87,14 +90,12 @@ export class AuthorizedFetcher {
 
   private retryPendingRequests() {
     const requestsToRetry = AuthorizedFetcher.pendingRequests.splice(0);
-
     requestsToRetry.forEach(({ url, options, resolve, reject }) => {
       this.doFetch(url, options).then(resolve).catch(reject);
     });
   }
 
   private expirePendingRequests() {
-    // Iterate through all the pending requests and reject them with the provided error
     AuthorizedFetcher.pendingRequests.forEach(({ reject }) => {
       return new Response(null, {
         status: 401,
@@ -128,11 +129,7 @@ export class AuthorizedFetcher {
     }
 
     const cookieStore = await cookies();
-    AuthorizedFetcher.assignCookiesTokens(
-      result as RefreshResponse,
-      cookieStore
-    );
-    AuthorizedFetcher.refreshToken = result.refreshToken;
+    AuthorizedFetcher.assignTokens(result as RefreshResponse, cookieStore);
 
     return true;
   }
@@ -154,7 +151,7 @@ export class AuthorizedFetcher {
   }
 
   // also used in the Login endpoint
-  static assignCookiesTokens(
+  static assignTokens(
     tokens: LoginResponse | RefreshResponse,
     cookieStore: ReadonlyRequestCookies
   ): void {
@@ -173,5 +170,8 @@ export class AuthorizedFetcher {
       path: '/',
       maxAge: 60 * 60 * 24 * 30,
     });
+
+    AuthorizedFetcher.accessToken = tokens.accessToken;
+    AuthorizedFetcher.refreshToken = tokens.refreshToken;
   }
 }

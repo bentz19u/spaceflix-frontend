@@ -2,7 +2,7 @@ import { AuthorizedFetcher } from '@/app/lib/authorized-fetch-lib';
 
 export async function GET(req: Request) {
   const fetcher = AuthorizedFetcher.getInstance();
-  const response = await fetcher.fetch(
+  const response = await fetcher.process(
     'http://localhost:3000/test-access-token',
     {
       method: 'GET',
