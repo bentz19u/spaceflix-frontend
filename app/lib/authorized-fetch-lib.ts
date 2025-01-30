@@ -13,12 +13,7 @@ export class AuthorizedFetcher {
   private static refreshToken: any;
   private static instance: AuthorizedFetcher | null = null;
   private static isRefreshing = false;
-  private static pendingRequests: {
-    url: string;
-    options: RequestInit;
-    resolve: (value: Response) => void;
-    reject: (reason?: any) => void;
-  }[] = [];
+  private refreshPromise: Promise<void> | null = null;
 
   // to handle smoothly the refresh token (and avoid race conditions)
   // AuthorizedFetcher has to be a singleton, getInstance() handle that
@@ -34,18 +29,14 @@ export class AuthorizedFetcher {
   async process(url: string, options: RequestInit = {}): Promise<Response> {
     const response = await this.doFetch(url, options);
 
-    // all good
     if (response.status === 401) {
       // access token has expired, we will check the refresh token
       if (!AuthorizedFetcher.isRefreshing) {
         AuthorizedFetcher.isRefreshing = true;
 
+        let success = false;
         try {
-          const success = await this.refresh();
-          if (success) {
-            // after refreshing, retry all failed requests
-            this.retryPendingRequests();
-          }
+          success = await this.refresh();
         } catch (error) {
           return new Response(null, {
             status: 401,
@@ -54,18 +45,19 @@ export class AuthorizedFetcher {
         } finally {
           AuthorizedFetcher.isRefreshing = false;
         }
-      }
 
-      return new Promise<Response>((resolve, reject) => {
-        AuthorizedFetcher.pendingRequests.push({
-          url,
-          options,
-          resolve,
-          reject,
-        });
-      });
+        if (success) {
+          // after refreshing, retry all failed requests
+          return await this.doFetch(url, options);
+        }
+      } else {
+        // wait for refresh to finish if it's already in progress
+        await this.waitForRefreshToComplete();
+        return await this.doFetch(url, options);
+      }
     }
 
+    // add error handling
     return response; // return error response
   }
 
@@ -88,23 +80,26 @@ export class AuthorizedFetcher {
     return fetch(url, { ...options, headers });
   }
 
-  private retryPendingRequests() {
-    const requestsToRetry = AuthorizedFetcher.pendingRequests.splice(0);
-    requestsToRetry.forEach(({ url, options, resolve, reject }) => {
-      this.doFetch(url, options).then(resolve).catch(reject);
-    });
-  }
+  private async waitForRefreshToComplete(): Promise<void> {
+    if (!this.refreshPromise) {
+      this.refreshPromise = new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+          if (!AuthorizedFetcher.isRefreshing) {
+            clearInterval(interval);
+            clearTimeout(timeout);
+            resolve();
+          }
+        }, 100);
 
-  private expirePendingRequests() {
-    AuthorizedFetcher.pendingRequests.forEach(({ reject }) => {
-      return new Response(null, {
-        status: 401,
-        headers: { Location: '/login' },
+        // 10 seconds timeout
+        const timeout = setTimeout(() => {
+          clearInterval(interval);
+          reject(new Error('Refresh token process took too long'));
+        }, 10000);
       });
-    });
+    }
 
-    // Clear the pending requests queue
-    AuthorizedFetcher.pendingRequests = [];
+    return this.refreshPromise;
   }
 
   private async refresh(): Promise<boolean> {
@@ -141,9 +136,6 @@ export class AuthorizedFetcher {
 
     AuthorizedFetcher.accessToken = null;
     AuthorizedFetcher.refreshToken = null;
-
-    // reject all pending requests with an error to expire them
-    this.expirePendingRequests();
 
     // throw an error to signal for redirection
     throw new Error('Unauthorized - Redirect to login');
