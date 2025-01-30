@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
   const cookieStore = await cookies();
 
-  AuthorizedFetcher.assignTokens(result, cookieStore);
+  AuthorizedFetcher.assignCookiesTokens(result, cookieStore);
 
   return new Response(JSON.stringify(result), { status: 201 });
 }

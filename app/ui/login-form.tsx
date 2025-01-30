@@ -8,7 +8,6 @@ export default function LoginForm() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    console.log(formData);
     const email = formData.get('email');
     const password = formData.get('password');
     const rememberMe = formData.get('rememberMe') == 'on';
@@ -30,10 +29,16 @@ export default function LoginForm() {
 
   async function handleRouteHandlerClick() {
     // for test purpose
-    const data = await clientAuthorizedFetcher(
-      '/api/auth/test-access-token',
-      'GET'
-    );
+    // const data = await clientAuthorizedFetcher(
+    //   '/api/auth/test-access-token',
+    //   'GET'
+    // );
+
+    const data = await Promise.all([
+      clientAuthorizedFetcher('/api/auth/test-access-token', 'GET'),
+      clientAuthorizedFetcher('/api/auth/test-access-token', 'GET'),
+      clientAuthorizedFetcher('/api/auth/test-access-token', 'GET'),
+    ]);
   }
 
   return (

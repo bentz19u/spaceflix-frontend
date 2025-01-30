@@ -9,39 +9,60 @@ interface RefreshResponse {
 }
 
 export class AuthorizedFetcher {
-  private cookieStore: ReadonlyRequestCookies | any;
+  private static refreshToken: any;
+  private static instance: AuthorizedFetcher | null = null;
+  private static isRefreshing = false;
+  private static pendingRequests: {
+    url: string;
+    options: RequestInit;
+    resolve: (value: Response) => void;
+    reject: (reason?: any) => void;
+  }[] = [];
 
+  // to handle smoothly the refresh token (and avoid race conditions)
+  // AuthorizedFetcher has to be a singleton, getInstance() handle that
+  static getInstance(): AuthorizedFetcher {
+    if (!this.instance) {
+      this.instance = new AuthorizedFetcher();
+    }
+    return this.instance;
+  }
+
+  // main method of this class, it will do the query using fetch()
+  // but also refresh the tokens if needed
   async fetch(url: string, options: RequestInit = {}): Promise<Response> {
-    this.cookieStore = await cookies();
     const response = await this.doFetch(url, options);
 
     // all good
-    if (response.ok) {
-      return response;
-    } else if (response.status === 401) {
-      // unauthorized, we will refresh tokens
-      const refreshToken = this.cookieStore.get('refreshToken')?.value;
-      if (refreshToken) {
+    if (response.ok) return response;
+    else if (response.status === 401) {
+      // access token has expired, we will check the refresh token
+      if (!AuthorizedFetcher.isRefreshing) {
+        AuthorizedFetcher.isRefreshing = true;
+
         try {
-          const success = await this.refresh(refreshToken);
-          // retry the original request
+          const success = await this.refresh();
           if (success) {
-            return this.doFetch(url, options);
+            // after refreshing, retry all failed requests
+            this.retryPendingRequests();
           }
-        } catch (error: any) {
-          // return the redirection to login
-          if (error.message === 'Unauthorized - Redirect to login') {
-            // Perform server-side redirection
-            return new Response(null, {
-              status: 401,
-              headers: { Location: '/login' },
-            });
-          }
+        } catch (error) {
+          return new Response(null, {
+            status: 401,
+            headers: { Location: '/login' },
+          });
+        } finally {
+          AuthorizedFetcher.isRefreshing = false;
         }
       } else {
-        return new Response(null, {
-          status: 401,
-          headers: { Location: '/login' },
+        // if refresh is already in progress, queue the current request to be retried after refresh
+        return new Promise<Response>((resolve, reject) => {
+          AuthorizedFetcher.pendingRequests.push({
+            url,
+            options,
+            resolve,
+            reject,
+          });
         });
       }
     }
@@ -55,7 +76,8 @@ export class AuthorizedFetcher {
       'Content-Type': 'application/json',
     };
 
-    const accessToken = this.cookieStore.get('accessToken')?.value;
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get('accessToken')?.value;
     if (accessToken) {
       headers['Authorization'] = `Bearer ${accessToken}`;
     }
@@ -63,29 +85,65 @@ export class AuthorizedFetcher {
     return fetch(url, { ...options, headers });
   }
 
-  private async refresh(refreshToken: string): Promise<boolean> {
+  private retryPendingRequests() {
+    const requestsToRetry = AuthorizedFetcher.pendingRequests.splice(0);
+
+    requestsToRetry.forEach(({ url, options, resolve, reject }) => {
+      this.doFetch(url, options).then(resolve).catch(reject);
+    });
+  }
+
+  private expirePendingRequests() {
+    // Iterate through all the pending requests and reject them with the provided error
+    AuthorizedFetcher.pendingRequests.forEach(({ reject }) => {
+      return new Response(null, {
+        status: 401,
+        headers: { Location: '/login' },
+      });
+    });
+
+    // Clear the pending requests queue
+    AuthorizedFetcher.pendingRequests = [];
+  }
+
+  private async refresh(): Promise<boolean> {
+    if (!AuthorizedFetcher.refreshToken) {
+      // force a re-read of cookies here to get the latest refresh token
+      const cookieStore = await cookies();
+      AuthorizedFetcher.refreshToken = cookieStore?.get('refreshToken')?.value;
+    }
+
     const response = await fetch('http://localhost:3000/refresh', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${refreshToken}`,
+        Authorization: `Bearer ${AuthorizedFetcher.refreshToken}`,
       },
     });
 
     const result = await response.json();
-
     if (this.isErrorResponse(result)) {
-      this.forceLogout();
+      await this.forceLogout();
       return false;
     }
 
-    AuthorizedFetcher.assignTokens(result as RefreshResponse, this.cookieStore);
+    const cookieStore = await cookies();
+    AuthorizedFetcher.assignCookiesTokens(
+      result as RefreshResponse,
+      cookieStore
+    );
+    AuthorizedFetcher.refreshToken = result.refreshToken;
+
     return true;
   }
 
-  private forceLogout() {
-    this.cookieStore.delete('accessToken');
-    this.cookieStore.delete('refreshToken');
+  private async forceLogout() {
+    const cookieStore = await cookies();
+    cookieStore.delete('accessToken');
+    cookieStore.delete('refreshToken');
+
+    // reject all pending requests with an error to expire them
+    this.expirePendingRequests();
 
     // throw an error to signal for redirection
     throw new Error('Unauthorized - Redirect to login');
@@ -96,7 +154,7 @@ export class AuthorizedFetcher {
   }
 
   // also used in the Login endpoint
-  static assignTokens(
+  static assignCookiesTokens(
     tokens: LoginResponse | RefreshResponse,
     cookieStore: ReadonlyRequestCookies
   ): void {
