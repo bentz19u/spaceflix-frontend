@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { AuthorizedFetcher } from '@/app/lib/authorized-fetch-lib';
 
-export interface LoginResponse {
+export interface LoginResponseDTO {
   accessToken: string;
   refreshToken: string;
 }
@@ -22,11 +22,9 @@ export async function POST(req: Request) {
     }),
   });
 
-  const result = (await response.json()) as LoginResponse | any;
+  const result = (await response.json()) as LoginResponseDTO | any;
 
-  const cookieStore = await cookies();
-
-  AuthorizedFetcher.assignTokens(result, cookieStore);
+  await AuthorizedFetcher.assignTokens(result);
 
   return new Response(JSON.stringify(result), { status: 201 });
 }

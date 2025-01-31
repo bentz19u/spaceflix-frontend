@@ -1,144 +1,119 @@
-import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
-import { LoginResponse } from '@/app/api/auth/login/route';
+import { LoginResponseDTO } from '@/app/api/auth/login/route';
 import { cookies } from 'next/headers';
 import { ErrorResponse } from '@/app/lib/global-backend-api-response';
 
-interface RefreshResponse {
+interface RefreshResponseDTO {
   accessToken: string;
   refreshToken: string;
 }
 
+interface DoRefreshResponseDTO {
+  success: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+// it will keep in memory the refresh promise for each users
+// it's to avoid having multiple queries for one user calling the refresh endpoint
+const refreshStates = new Map<string, Promise<DoRefreshResponseDTO>>();
+
 export class AuthorizedFetcher {
-  private static accessToken: any;
-  private static refreshToken: any;
-  private static instance: AuthorizedFetcher | null = null;
-  private static isRefreshing = false;
-  private refreshPromise: Promise<void> | null = null;
-
-  // to handle smoothly the refresh token (and avoid race conditions)
-  // AuthorizedFetcher has to be a singleton, getInstance() handle that
-  static getInstance(): AuthorizedFetcher {
-    if (!this.instance) {
-      this.instance = new AuthorizedFetcher();
-    }
-    return this.instance;
-  }
-
   // main method of this class, it will do the query using fetch()
   // but also refresh the tokens if needed
   async process(url: string, options: RequestInit = {}): Promise<Response> {
-    const response = await this.doFetch(url, options);
+    const cookieStore = await cookies();
+    const accessToken = cookieStore?.get('accessToken')?.value;
+    const response = await this.doFetch(url, options, accessToken);
 
     if (response.status === 401) {
-      // access token has expired, we will check the refresh token
-      if (!AuthorizedFetcher.isRefreshing) {
-        AuthorizedFetcher.isRefreshing = true;
-
-        let success = false;
-        try {
-          success = await this.refresh();
-        } catch (error) {
-          return new Response(null, {
-            status: 401,
-            headers: { Location: '/login' },
-          });
-        } finally {
-          AuthorizedFetcher.isRefreshing = false;
-        }
-
-        if (success) {
-          // after refreshing, retry all failed requests
-          return await this.doFetch(url, options);
-        }
-      } else {
-        // wait for refresh to finish if it's already in progress
-        await this.waitForRefreshToComplete();
-        return await this.doFetch(url, options);
-      }
+      return await this.handleRefresh(url, options);
     }
 
-    // add error handling
-    return response; // return error response
+    return response;
   }
 
-  private async doFetch(url: string, options: RequestInit): Promise<Response> {
-    if (!AuthorizedFetcher.accessToken) {
-      // force a re-read of cookies here to get the latest refresh token
-      const cookieStore = await cookies();
-      AuthorizedFetcher.accessToken = cookieStore?.get('accessToken')?.value;
-    }
-
+  private async doFetch(
+    url: string,
+    options: RequestInit,
+    accessToken?: string
+  ): Promise<Response> {
     const headers: any = {
       ...options.headers,
       'Content-Type': 'application/json',
     };
 
-    if (AuthorizedFetcher.accessToken) {
-      headers['Authorization'] = `Bearer ${AuthorizedFetcher.accessToken}`;
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
     }
 
     return fetch(url, { ...options, headers });
   }
 
-  private async waitForRefreshToComplete(): Promise<void> {
-    if (!this.refreshPromise) {
-      this.refreshPromise = new Promise((resolve, reject) => {
-        const interval = setInterval(() => {
-          if (!AuthorizedFetcher.isRefreshing) {
-            clearInterval(interval);
-            clearTimeout(timeout);
-            resolve();
-          }
-        }, 100);
+  private async handleRefresh(
+    url: string,
+    options: RequestInit
+  ): Promise<Response> {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore?.get('sessionId')?.value || 'global-session';
 
-        // 10 seconds timeout
-        const timeout = setTimeout(() => {
-          clearInterval(interval);
-          reject(new Error('Refresh token process took too long'));
-        }, 10000);
+    // check if refresh is already in progress
+    if (!refreshStates.has(sessionId)) {
+      // create an observable (Promise) and store it
+      refreshStates.set(
+        sessionId,
+        this.doRefresh().finally(() => {
+          refreshStates.delete(sessionId);
+        })
+      );
+    }
+
+    // it's a promise, so we wait for it to be resolved
+    const result: DoRefreshResponseDTO | undefined =
+      await refreshStates.get(sessionId);
+
+    if (result && result.success) {
+      // retry original request
+      return await this.doFetch(url, options, result.accessToken);
+    } else {
+      return new Response(null, {
+        status: 401,
+        headers: { Location: '/login' },
       });
     }
-
-    return this.refreshPromise;
   }
 
-  private async refresh(): Promise<boolean> {
-    if (!AuthorizedFetcher.refreshToken) {
-      // force a re-read of cookies here to get the latest refresh token
-      const cookieStore = await cookies();
-      AuthorizedFetcher.refreshToken = cookieStore?.get('refreshToken')?.value;
-    }
+  private async doRefresh(): Promise<DoRefreshResponseDTO> {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore?.get('refreshToken')?.value;
 
     const response = await fetch('http://localhost:3000/refresh', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${AuthorizedFetcher.refreshToken}`,
+        Authorization: `Bearer ${refreshToken}`,
       },
     });
 
     const result = await response.json();
     if (this.isErrorResponse(result)) {
       await this.forceLogout();
-      return false;
+      return {
+        success: false,
+      };
     }
 
-    const cookieStore = await cookies();
-    AuthorizedFetcher.assignTokens(result as RefreshResponse, cookieStore);
-
-    return true;
+    await AuthorizedFetcher.assignTokens(result as RefreshResponseDTO);
+    return {
+      success: true,
+      ...result,
+    };
   }
 
   private async forceLogout() {
     const cookieStore = await cookies();
     cookieStore.delete('accessToken');
     cookieStore.delete('refreshToken');
-
-    AuthorizedFetcher.accessToken = null;
-    AuthorizedFetcher.refreshToken = null;
-
-    // throw an error to signal for redirection
-    throw new Error('Unauthorized - Redirect to login');
+    cookieStore.delete('sessionID');
   }
 
   private isErrorResponse(result: any): result is ErrorResponse {
@@ -146,10 +121,22 @@ export class AuthorizedFetcher {
   }
 
   // also used in the Login endpoint
-  static assignTokens(
-    tokens: LoginResponse | RefreshResponse,
-    cookieStore: ReadonlyRequestCookies
-  ): void {
+  static async assignTokens(
+    tokens: LoginResponseDTO | RefreshResponseDTO
+  ): Promise<void> {
+    const cookieStore = await cookies();
+    const sessionID = cookieStore?.get('sessionID')?.value;
+
+    if (!sessionID) {
+      const newSessionID = crypto.randomUUID();
+      cookieStore.set('sessionID', newSessionID, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+      });
+    }
+
     cookieStore.set('accessToken', tokens.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -165,8 +152,5 @@ export class AuthorizedFetcher {
       path: '/',
       maxAge: 60 * 60 * 24 * 30,
     });
-
-    AuthorizedFetcher.accessToken = tokens.accessToken;
-    AuthorizedFetcher.refreshToken = tokens.refreshToken;
   }
 }
