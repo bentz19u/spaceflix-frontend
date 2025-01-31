@@ -28,12 +28,6 @@ export default function LoginForm() {
   }
 
   async function handleRouteHandlerClick() {
-    // for test purpose
-    // const data = await clientAuthorizedFetcher(
-    //   '/api/auth/test-access-token',
-    //   'GET'
-    // );
-
     const data = await Promise.all([
       clientAuthorizedFetcher('/api/auth/test-access-token', 'GET'),
       clientAuthorizedFetcher('/api/auth/test-access-token2', 'GET'),
@@ -91,7 +85,7 @@ export default function LoginForm() {
             name='rememberMe'
             placeholder='Password'
             defaultChecked={true}
-            className='h-4 w-4 cursor-pointer rounded-sm border-white bg-black text-white hover:ring-1 hover:ring-white'
+            className='h-4 w-4 cursor-pointer appearance-none rounded-sm accent-black ring-1 ring-gray-500 checked:appearance-auto checked:accent-white hover:ring-1 hover:ring-white'
           />
           <label htmlFor='rememberMe' className='ms-2 cursor-pointer'>
             Remember me

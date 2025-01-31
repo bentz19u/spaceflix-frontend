@@ -16,6 +16,10 @@ body {
 
   #header-content {
     width: 56rem;
+
+    #header-logo {
+      font-weight: bold;
+    }
   }
 
   #login-form {
