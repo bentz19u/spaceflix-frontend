@@ -1,9 +1,15 @@
-'use client';
-
 import { cookie } from '@/app/ui/fonts';
 import Link from 'next/link';
+import { getDictionary } from '@/app/[lang]/dictionaries';
 
-export default function Header() {
+export default async function Header({
+  dictionary,
+}: {
+  dictionary: Awaited<ReturnType<typeof getDictionary>>['header'];
+}) {
+  console.log('dictionary');
+  console.log(dictionary);
+
   return (
     <header className='sticky top-0 z-50 flex h-20 bg-black/0 sm:bg-neutral-900/0'>
       <div
@@ -19,9 +25,9 @@ export default function Header() {
         <div>
           <Link
             href='/login'
-            className='flex min-h-8 min-w-20 items-center justify-center rounded-lg bg-red-600'
+            className='flex min-h-8 min-w-30 items-center justify-center rounded-lg bg-red-600'
           >
-            Sign In
+            {dictionary.signIn}
           </Link>
         </div>
       </div>
