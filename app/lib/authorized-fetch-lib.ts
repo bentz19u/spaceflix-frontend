@@ -1,6 +1,6 @@
 import { LoginResponseDTO } from '@/app/api/auth/login/route';
 import { cookies } from 'next/headers';
-import { ErrorResponse } from '@/app/lib/global-backend-api-response';
+import { ErrorResponseDto } from '@/app/lib/global-backend-api-response';
 
 interface RefreshResponseDTO {
   accessToken: string;
@@ -116,7 +116,7 @@ export class AuthorizedFetcher {
     cookieStore.delete('sessionID');
   }
 
-  private isErrorResponse(result: any): result is ErrorResponse {
+  private isErrorResponse(result: any): result is ErrorResponseDto {
     return result && 'error' in result && typeof result.error === 'object';
   }
 

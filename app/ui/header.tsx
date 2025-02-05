@@ -7,9 +7,6 @@ export default async function Header({
 }: {
   dictionary: Awaited<ReturnType<typeof getDictionary>>['header'];
 }) {
-  console.log('dictionary');
-  console.log(dictionary);
-
   return (
     <header className='sticky top-0 z-50 flex h-20 bg-black/0 sm:bg-neutral-900/0'>
       <div

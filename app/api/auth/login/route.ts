@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers';
 import { AuthorizedFetcher } from '@/app/lib/authorized-fetch-lib';
+import { ErrorResponseDto } from '@/app/lib/global-backend-api-response';
 
 export interface LoginResponseDTO {
   accessToken: string;
@@ -21,10 +21,11 @@ export async function POST(req: Request) {
       rememberMe,
     }),
   });
+  const result = (await response.json()) as LoginResponseDTO | ErrorResponseDto;
 
-  const result = (await response.json()) as LoginResponseDTO | any;
+  if (!('error' in result)) {
+    await AuthorizedFetcher.assignTokens(result);
+  }
 
-  await AuthorizedFetcher.assignTokens(result);
-
-  return new Response(JSON.stringify(result), { status: 201 });
+  return new Response(JSON.stringify(result), { status: response.status });
 }

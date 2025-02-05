@@ -1,11 +1,14 @@
 'use client';
 
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { clientAuthorizedFetcher } from '@/app/lib/client-authorized-fetch-lib';
 
 export default function LoginForm() {
+  const [errorMessage, setErrorMessage] = useState('');
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setErrorMessage('');
 
     const formData = new FormData(event.currentTarget);
     const email = formData.get('email');
@@ -18,13 +21,16 @@ export default function LoginForm() {
       body: JSON.stringify({ email, password, rememberMe }),
     });
 
-    console.log(response);
-
-    // if (response.ok) {
-    //   // router.push('/profile');
-    // } else {
-    //   // Handle errors
-    // }
+    if (response.ok) {
+      // router.push('/profile');
+    } else {
+      const result = await response.json();
+      if (response.status === 404) {
+        setErrorMessage('Unknown email or password');
+      } else if (response.status === 400) {
+        setErrorMessage('Wrong format');
+      }
+    }
   }
 
   async function handleRouteHandlerClick() {
@@ -97,6 +103,8 @@ export default function LoginForm() {
         >
           Sign In
         </button>
+
+        {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
       </div>
 
       <footer className='mt-5 min-h-10'>
