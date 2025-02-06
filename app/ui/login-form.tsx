@@ -4,32 +4,35 @@ import { FormEvent, useState } from 'react';
 import { clientAuthorizedFetcher } from '@/app/lib/client-authorized-fetch-lib';
 
 export default function LoginForm() {
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setErrorMessage('');
+    setIsLoading(true);
 
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get('email');
-    const password = formData.get('password');
-    const rememberMe = formData.get('rememberMe') == 'on';
+    try {
+      const formData = new FormData(event.currentTarget);
+      const email = formData.get('email');
+      const password = formData.get('password');
+      const rememberMe = formData.get('rememberMe') == 'on';
 
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, rememberMe }),
-    });
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, rememberMe }),
+      });
 
-    if (response.ok) {
-      // router.push('/profile');
-    } else {
-      const result = await response.json();
-      if (response.status === 404) {
-        setErrorMessage('Unknown email or password');
-      } else if (response.status === 400) {
-        setErrorMessage('Wrong format');
+      if (response.ok) {
+        setErrorMessage(null);
+        // router.push('/profile');
+      } else {
+        setErrorMessage('Incorrect email or password');
       }
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -48,6 +51,12 @@ export default function LoginForm() {
       className='flex h-full flex-col justify-between py-10'
     >
       <header className='mb-5 min-h-10'>Sign In</header>
+
+      {errorMessage && (
+        <div className='rounded-lg bg-yellow-500 p-2.5 text-black'>
+          {errorMessage}
+        </div>
+      )}
 
       <div className='flex flex-grow-[0.5] flex-col justify-between'>
         <div className='relative'>
@@ -99,12 +108,15 @@ export default function LoginForm() {
         </div>
         <button
           type='submit'
-          className='min-h-10 cursor-pointer rounded-lg bg-red-600'
+          className='min-h-10 cursor-pointer rounded-lg bg-red-600 disabled:bg-red-800'
+          disabled={isLoading}
         >
-          Sign In
+          {isLoading ? (
+            <div className='mx-auto h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
+          ) : (
+            'Sign in'
+          )}
         </button>
-
-        {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
       </div>
 
       <footer className='mt-5 min-h-10'>
