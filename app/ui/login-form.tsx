@@ -130,6 +130,7 @@ export default function LoginForm() {
           type='submit'
           className='min-h-10 cursor-pointer rounded-lg bg-red-600 disabled:bg-red-800'
           disabled={isLoading}
+          aria-busy={isLoading}
         >
           {isLoading ? (
             <div className='mx-auto h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
