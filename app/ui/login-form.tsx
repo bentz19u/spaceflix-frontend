@@ -93,19 +93,39 @@ export default function LoginForm() {
           </label>
         </div>
 
-        <div>
+        <label
+          htmlFor='rememberMe'
+          className='flex cursor-pointer items-center gap-2'
+        >
           <input
             type='checkbox'
             id='rememberMe'
             name='rememberMe'
-            placeholder='Password'
             defaultChecked={true}
-            className='h-4 w-4 cursor-pointer appearance-none rounded-sm accent-black ring-1 ring-gray-500 checked:appearance-auto checked:accent-white hover:ring-1 hover:ring-white'
+            className='peer hidden'
           />
-          <label htmlFor='rememberMe' className='ms-2 cursor-pointer'>
-            Remember me
-          </label>
-        </div>
+          <div
+            className='flex h-4 w-4 items-center justify-center rounded-sm border transition-colors duration-200 peer-checked:bg-white'
+            aria-hidden='true'
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 16 16'
+              width='12'
+              height='12'
+              className='text-black'
+              aria-hidden='true'
+            >
+              <path
+                fill='currentColor'
+                fillRule='evenodd'
+                clipRule='evenodd'
+                d='M13.4696 3.46973L14.5303 4.53039L6.53026 12.5304C6.23737 12.8233 5.7625 12.8233 5.4696 12.5304L1.4696 8.53039L2.53026 7.46973L5.99993 10.9394L13.4696 3.46973Z'
+              />
+            </svg>
+          </div>
+          Remember me
+        </label>
         <button
           type='submit'
           className='min-h-10 cursor-pointer rounded-lg bg-red-600 disabled:bg-red-800'

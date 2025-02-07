@@ -34,7 +34,7 @@ export default async function RootLayout({
   return (
     <html lang={(await params).lang}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-black antialiased`}
       >
         <div className="absolute inset-0 h-full bg-[url('/background-main-img.png')] bg-cover">
           <div className='absolute inset-0 bg-black opacity-50'></div>{' '}
