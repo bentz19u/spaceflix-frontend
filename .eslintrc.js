@@ -5,10 +5,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   root: true,
   env: {
     node: true,
@@ -25,7 +22,7 @@ module.exports = {
       'error',
       {
         endOfLine: 'auto',
-        printWidth: 120,
+        printWidth: 100,
       },
     ],
   },
