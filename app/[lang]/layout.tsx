@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
 import React from 'react';
-import Header from '@/app/ui/header';
+import Header from '@/app/ui/header/header';
 import { Locale } from '@/i18n-config';
 import { getDictionary } from '@/app/[lang]/dictionaries';
 
@@ -33,14 +33,12 @@ export default async function RootLayout({
 
   return (
     <html lang={(await params).lang}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-black antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-black antialiased`}>
         <div className="absolute inset-0 h-full bg-[url('/background-main-img.png')] bg-cover">
           <div className='absolute inset-0 bg-black opacity-50'></div>{' '}
         </div>
         <div className='relative z-10'>
-          <Header dictionary={dictionary.header} />
+          <Header dictionary={dictionary.header} locale={lang} />
           <main className='text-white'>{children}</main>
         </div>
       </body>
