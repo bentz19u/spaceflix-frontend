@@ -7,11 +7,7 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
-export async function login(
-  email: string,
-  password: string,
-  rememberMe: boolean
-): Promise<void> {
+export async function login(email: string, password: string, rememberMe: boolean): Promise<void> {
   const response = await fetch('http://localhost:3000/login', {
     method: 'POST',
     headers: {

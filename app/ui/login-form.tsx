@@ -65,7 +65,9 @@ export default function LoginForm() {
     <form id='login-form' onSubmit={handleSubmit} className='flex h-full flex-auto flex-col py-10'>
       <header className='mb-5 min-h-10'>Sign In</header>
 
-      {errorMessage && <div className='mb-5 rounded-lg bg-yellow-500 p-2.5 text-black'>{errorMessage}</div>}
+      {errorMessage && (
+        <div className='mb-5 rounded-lg bg-yellow-500 p-2.5 text-black'>{errorMessage}</div>
+      )}
 
       <div className='flex flex-col'>
         <div className='relative mb-5'>
@@ -107,7 +109,13 @@ export default function LoginForm() {
         </div>
 
         <label htmlFor='rememberMe' className='mb-5 flex cursor-pointer items-center gap-2'>
-          <input type='checkbox' id='rememberMe' name='rememberMe' defaultChecked={true} className='peer hidden' />
+          <input
+            type='checkbox'
+            id='rememberMe'
+            name='rememberMe'
+            defaultChecked={true}
+            className='peer hidden'
+          />
           <div
             className='flex h-4 w-4 items-center justify-center rounded-sm border transition-colors duration-200 peer-checked:bg-white'
             aria-hidden='true'

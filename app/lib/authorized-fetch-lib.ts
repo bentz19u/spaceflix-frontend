@@ -49,10 +49,7 @@ export class AuthorizedFetcher {
     return fetch(url, { ...options, headers });
   }
 
-  private async handleRefresh(
-    url: string,
-    options: RequestInit
-  ): Promise<Response> {
+  private async handleRefresh(url: string, options: RequestInit): Promise<Response> {
     const cookieStore = await cookies();
     const sessionId = cookieStore?.get('sessionId')?.value || 'global-session';
 
@@ -68,8 +65,7 @@ export class AuthorizedFetcher {
     }
 
     // it's a promise, so we wait for it to be resolved
-    const result: DoRefreshResponseDTO | undefined =
-      await refreshStates.get(sessionId);
+    const result: DoRefreshResponseDTO | undefined = await refreshStates.get(sessionId);
 
     if (result && result.success) {
       // retry original request
@@ -121,9 +117,7 @@ export class AuthorizedFetcher {
   }
 
   // also used in the Login endpoint
-  static async assignTokens(
-    tokens: LoginResponseDTO | RefreshResponseDTO
-  ): Promise<void> {
+  static async assignTokens(tokens: LoginResponseDTO | RefreshResponseDTO): Promise<void> {
     const cookieStore = await cookies();
     const sessionID = cookieStore?.get('sessionID')?.value;
 
