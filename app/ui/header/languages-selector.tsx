@@ -1,28 +1,46 @@
 'use client';
 
-import { useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LanguagesSelector(locale: { local: string }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
-  //
-  // const value = useRouter();
-  // console.log(value);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // remove language
+  const baseUrl = pathname.slice(3);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isDropdownOpen && !dropdownRef.current?.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  });
+
   return (
-    <div className='relative inline-block'>
+    <div className='relative inline-block' ref={dropdownRef}>
       <button
         id='header-language'
         onClick={toggleDropdown}
         className='mx-auto mr-5 flex min-h-8 min-w-30 flex-row items-center justify-center rounded-lg border-1 border-white bg-black text-white'
       >
         {(() => {
-          switch (locale) {
+          switch (locale.local) {
+            case 'fr':
+              return 'Français';
             default:
               return 'English';
           }
@@ -50,20 +68,20 @@ export default function LanguagesSelector(locale: { local: string }) {
           aria-labelledby='header-language'
         >
           <li>
-            <a
-              href='#'
+            <Link
+              href={'/en/' + baseUrl}
               className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
             >
               English
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href='#'
+            <Link
+              href={'/fr/' + baseUrl}
               className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
             >
               Français
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
