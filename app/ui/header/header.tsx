@@ -23,7 +23,7 @@ export default async function Header({
           <LanguagesSelector local={locale} />
           <Link
             href='/login'
-            className='flex min-h-8 min-w-30 items-center justify-center rounded-lg bg-red-600'
+            className='flex min-h-8 min-w-15 items-center justify-center rounded-lg bg-red-600 px-3'
           >
             {dictionary.signIn}
           </Link>
