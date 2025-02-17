@@ -1,13 +1,21 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 let locales = ['en', 'fr'];
 
-function getLocale(request) {
+async function getLocale(request) {
+  const cookieStore = await cookies();
+  const preferredLanguage = cookieStore.get('preferredLanguage');
+
+  if (!preferredLanguage) return 'en';
+
+  if (locales.includes(preferredLanguage.value)) return preferredLanguage.value;
+
   return 'en';
 }
 
-export function middleware(request) {
-  // Check if there is any supported locale in the pathname
+export async function middleware(request) {
+  // check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -15,11 +23,10 @@ export function middleware(request) {
 
   if (pathnameHasLocale) return;
 
-  // Redirect if there is no locale
-  const locale = getLocale(request);
+  // redirect if there is no locale
+  const locale = await getLocale(request);
   request.nextUrl.pathname = `/${locale}${pathname}`;
-  // e.g. incoming request is /products
-  // The new URL is now /en-US/products
+
   return NextResponse.redirect(request.nextUrl);
 }
 

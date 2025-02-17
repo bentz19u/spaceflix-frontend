@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { setCookie } from 'cookies-next';
 import Link from 'next/link';
 
 export default function LanguagesSelector(locale: { local: string }) {
@@ -9,11 +10,24 @@ export default function LanguagesSelector(locale: { local: string }) {
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // remove language
+  // remove language, it's assuming the lang is always in the URL from the middleware
   const baseUrl = pathname.slice(3);
+
+  const getLanguageName = (locale: string) => {
+    switch (locale) {
+      case 'fr':
+        return 'Français';
+      default:
+        return 'English';
+    }
+  };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleClickLanguage = (lang: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    setCookie('preferredLanguage', lang);
   };
 
   useEffect(() => {
@@ -35,16 +49,11 @@ export default function LanguagesSelector(locale: { local: string }) {
       <button
         id='header-language'
         onClick={toggleDropdown}
+        aria-expanded={isDropdownOpen}
+        aria-controls='language-dropdown'
         className='mx-auto mr-5 flex min-h-8 min-w-30 flex-row items-center justify-center rounded-lg border-1 border-white bg-black text-white'
       >
-        {(() => {
-          switch (locale.local) {
-            case 'fr':
-              return 'Français';
-            default:
-              return 'English';
-          }
-        })()}
+        {getLanguageName(locale.local)}
         <svg
           className='-mr-1 size-5 text-gray-400'
           viewBox='0 0 20 20'
@@ -69,16 +78,18 @@ export default function LanguagesSelector(locale: { local: string }) {
         >
           <li>
             <Link
-              href={'/en/' + baseUrl}
+              href={'/en' + baseUrl}
               className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
+              onClick={() => toggleClickLanguage('en')}
             >
               English
             </Link>
           </li>
           <li>
             <Link
-              href={'/fr/' + baseUrl}
+              href={'/fr' + baseUrl}
               className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
+              onClick={() => toggleClickLanguage('fr')}
             >
               Français
             </Link>
