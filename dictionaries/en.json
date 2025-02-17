@@ -1,5 +1,15 @@
 {
   "header": {
     "signIn": "Sign In"
+  },
+  "login": {
+    "signIn": "Sign In",
+    "email": "Email",
+    "emailError": "Please enter a valid email.",
+    "password": "Password",
+    "passwordError": "Password must be at least 8 characters.",
+    "rememberMe": "Remember me",
+    "newToSpaceflix": "New to Spaceflix?",
+    "signUpNow": "Sign up now."
   }
 }
