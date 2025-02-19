@@ -7,7 +7,7 @@ export default async function LoginPage({ params }: { params: Promise<{ lang: Lo
   const dictionary = await getDictionary(lang);
 
   return (
-    <div className='flex justify-center pt-2'>
+    <div className='flex justify-center pt-2 pt-20'>
       <div className='h-[600px] min-w-[400px] rounded-lg bg-neutral-900/90 pr-10 pl-10'>
         <LoginForm dictionary={dictionary.login} />
       </div>

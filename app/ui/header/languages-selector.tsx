@@ -51,7 +51,7 @@ export default function LanguagesSelector(locale: { local: string }) {
         onClick={toggleDropdown}
         aria-expanded={isDropdownOpen}
         aria-controls='language-dropdown'
-        className='mx-auto mr-5 flex min-h-8 min-w-30 flex-row items-center justify-center rounded-lg border-1 border-white bg-black text-white'
+        className='mx-auto mr-5 flex min-h-8 min-w-30 flex-row items-center justify-center rounded-lg border-1 border-gray-400 bg-black text-white'
       >
         {getLanguageName(locale.local)}
         <svg

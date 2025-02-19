@@ -11,7 +11,7 @@ export default async function Header({
   locale: string;
 }) {
   return (
-    <header className='sticky top-0 z-50 flex h-20 bg-black/0 sm:bg-neutral-900/0'>
+    <header className='fixed top-0 z-50 flex h-20 w-full bg-black/0 sm:bg-neutral-900/0'>
       <div
         id='header-content'
         className='mx-auto flex flex-row content-center items-center justify-between'
