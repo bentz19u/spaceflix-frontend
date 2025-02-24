@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { setCookie } from 'cookies-next';
 import Link from 'next/link';
+import cn from '@/app/lib/cn';
+import Image from 'next/image';
 
 export default function LanguagesSelector(locale: { local: string }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -51,9 +53,14 @@ export default function LanguagesSelector(locale: { local: string }) {
         onClick={toggleDropdown}
         aria-expanded={isDropdownOpen}
         aria-controls='language-dropdown'
-        className='mx-auto mr-5 flex min-h-8 min-w-30 flex-row items-center justify-center rounded-lg border-1 border-gray-400 bg-black text-white'
+        className={cn(
+          'mx-auto mr-5 flex min-h-8 min-w-0 flex-row items-center justify-center rounded-lg border-1 border-gray-400 bg-black text-white',
+          'sm:min-w-30'
+        )}
       >
-        {getLanguageName(locale.local)}
+        <span className={cn('hidden', 'sm:block')}>{getLanguageName(locale.local)}</span>
+        <span className={cn('block', 'sm:hidden')}></span>
+
         <svg
           className='-mr-1 size-5 text-gray-400'
           viewBox='0 0 20 20'

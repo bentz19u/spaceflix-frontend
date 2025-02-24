@@ -2,6 +2,7 @@ import { cookie } from '@/app/ui/fonts';
 import Link from 'next/link';
 import { getDictionary } from '@/app/[lang]/dictionaries';
 import LanguagesSelector from '@/app/ui/header/languages-selector';
+import cn from '@/app/lib/cn';
 
 export default async function Header({
   dictionary,
@@ -11,15 +12,18 @@ export default async function Header({
   locale: string;
 }) {
   return (
-    <header className='fixed top-0 z-50 flex h-20 w-full bg-black/0 sm:bg-neutral-900/0'>
+    <header className={cn('fixed top-0 z-50 flex h-20 w-full bg-black/0', 'sm:bg-neutral-900/0')}>
       <div
         id='header-content'
         className='mx-auto flex flex-row content-center items-center justify-between'
       >
-        <div id='header-logo' className={`${cookie.className} md:px text-5xl text-red-600`}>
+        <div
+          id='header-logo'
+          className={cn(`${cookie.className} pl-5 text-3xl text-red-600`, 'sm:pl-0 sm:text-5xl')}
+        >
           Spaceflix
         </div>
-        <div className='flex flex-row'>
+        <div className={cn('flex flex-row pr-5', 'sm:pr-0')}>
           <LanguagesSelector local={locale} />
           <Link
             href='/login'
