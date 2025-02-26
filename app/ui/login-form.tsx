@@ -5,6 +5,7 @@ import { clientAuthorizedFetcher } from '@/app/lib/client-authorized-fetch-lib';
 import { z } from 'zod';
 import FormInputError from '@/app/ui/form-input-error';
 import { getDictionary } from '@/app/[lang]/dictionaries';
+import CheckboxCheck from '@/app/assets/icons/checkbox-check.svg';
 
 export default function LoginForm({
   dictionary,
@@ -125,21 +126,7 @@ export default function LoginForm({
             className='flex h-4 w-4 items-center justify-center rounded-sm border transition-colors duration-200 peer-checked:bg-white'
             aria-hidden='true'
           >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 16 16'
-              width='12'
-              height='12'
-              className='text-black'
-              aria-hidden='true'
-            >
-              <path
-                fill='currentColor'
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M13.4696 3.46973L14.5303 4.53039L6.53026 12.5304C6.23737 12.8233 5.7625 12.8233 5.4696 12.5304L1.4696 8.53039L2.53026 7.46973L5.99993 10.9394L13.4696 3.46973Z'
-              />
-            </svg>
+            <CheckboxCheck className='text-black' />
           </div>
           {dictionary.rememberMe}
         </label>

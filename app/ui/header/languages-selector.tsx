@@ -6,6 +6,7 @@ import { setCookie } from 'cookies-next';
 import Link from 'next/link';
 import cn from '@/app/lib/cn';
 import LanguageIcon from '@/app/assets/icons/language.svg';
+import ArrowDown from '@/app/assets/icons/arrow-down.svg';
 
 export default function LanguagesSelector(locale: { local: string }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -62,20 +63,7 @@ export default function LanguagesSelector(locale: { local: string }) {
         <span className={cn('block', 'sm:hidden')}>
           <LanguageIcon className='text-white' />
         </span>
-
-        <svg
-          className='-mr-1 size-5 text-gray-400'
-          viewBox='0 0 20 20'
-          fill='currentColor'
-          aria-hidden='true'
-          data-slot='icon'
-        >
-          <path
-            fillRule='evenodd'
-            d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z'
-            clipRule='evenodd'
-          />
-        </svg>
+        <ArrowDown width={20} height={20} />
       </button>
 
       <div

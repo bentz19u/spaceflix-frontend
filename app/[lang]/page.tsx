@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import cn from '@/app/lib/cn';
 
+import ArrowRight from '@/app/assets/icons/arrow-right.svg';
+
 export default async function Home() {
   return (
     <div className='flex h-screen flex-col items-center justify-center'>
@@ -49,23 +51,7 @@ export default async function Home() {
             )}
           >
             <span className={cn('mr-2', 'lg:mr-4')}>Get started</span>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              role='img'
-              viewBox='0 0 24 24'
-              width='24'
-              height='24'
-              data-icon='ChevronRightStandard'
-              aria-hidden='true'
-            >
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M15.5859 12L8.29303 19.2928L9.70725 20.7071L17.7072 12.7071C17.8948 12.5195 18.0001 12.2652 18.0001 12C18.0001 11.7347 17.8948 11.4804 17.7072 11.2928L9.70724 3.29285L8.29303 4.70706L15.5859 12Z'
-                fill='currentColor'
-              ></path>
-            </svg>
+            <ArrowRight />
           </Link>
         </div>
       </div>
