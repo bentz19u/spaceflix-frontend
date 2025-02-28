@@ -6,6 +6,7 @@ import { z } from 'zod';
 import FormInputError from '@/app/ui/form-input-error';
 import { getDictionary } from '@/app/[lang]/dictionaries';
 import CheckboxCheck from '@/app/assets/icons/checkbox-check.svg';
+import cn from '@/app/lib/cn';
 
 export default function LoginForm({
   dictionary,
@@ -81,7 +82,11 @@ export default function LoginForm({
             type='text'
             id='email'
             name='email'
-            className={`peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white ${formErrors.email ? 'ring-2 ring-red-500' : ''}`}
+            className={cn(
+              'peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white',
+              'focus:ring-2 focus:ring-white',
+              formErrors.email ? 'ring-2 ring-red-500' : ''
+            )}
             defaultValue='daniel.bentz@test.com'
             placeholder=''
             onBlur={handleBlur}
@@ -100,7 +105,11 @@ export default function LoginForm({
             type='password'
             id='password'
             name='password'
-            className={`peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white focus:ring-2 focus:ring-white ${formErrors.password ? 'ring-2 ring-red-500' : ''}`}
+            className={cn(
+              'peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white',
+              'focus:ring-2 focus:ring-white',
+              formErrors.password ? 'ring-2 ring-red-500' : ''
+            )}
             defaultValue='password'
             placeholder=''
             onBlur={handleBlur}
