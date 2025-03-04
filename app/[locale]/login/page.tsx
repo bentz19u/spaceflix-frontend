@@ -1,12 +1,7 @@
 import LoginForm from '@/app/ui/login-form';
-import { getDictionary } from '@/app/[lang]/dictionaries';
-import { Locale } from '@/i18n-config';
 import cn from '@/app/lib/cn';
 
-export default async function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
-  const { lang } = await params;
-  const dictionary = await getDictionary(lang);
-
+export default async function LoginPage() {
   return (
     <div className='flex justify-center pt-2 pt-20'>
       <div
@@ -15,7 +10,7 @@ export default async function LoginPage({ params }: { params: Promise<{ lang: Lo
           'sm:min-w-[400px] sm:px-10'
         )}
       >
-        <LoginForm dictionary={dictionary.login} />
+        <LoginForm />
       </div>
     </div>
   );

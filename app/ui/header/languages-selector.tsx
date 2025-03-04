@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { setCookie } from 'cookies-next';
-import Link from 'next/link';
+import { Link, usePathname } from '@/app/i18n/routing';
 import cn from '@/app/lib/cn';
 import LanguageIcon from '@/app/assets/icons/language.svg';
 import ArrowDown from '@/app/assets/icons/arrow-down.svg';
@@ -12,9 +11,6 @@ export default function LanguagesSelector(locale: { local: string }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // remove language, it's assuming the lang is always in the URL from the middleware
-  const baseUrl = pathname.slice(3);
 
   const getLanguageName = (locale: string) => {
     switch (locale) {
@@ -75,18 +71,20 @@ export default function LanguagesSelector(locale: { local: string }) {
         >
           <li>
             <Link
-              href={'/en' + baseUrl}
+              href={pathname}
               className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
               onClick={() => toggleClickLanguage('en')}
+              locale='en'
             >
               English
             </Link>
           </li>
           <li>
             <Link
-              href={'/fr' + baseUrl}
+              href={pathname}
               className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
               onClick={() => toggleClickLanguage('fr')}
+              locale='fr'
             >
               Français
             </Link>

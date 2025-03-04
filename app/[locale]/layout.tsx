@@ -3,8 +3,10 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
 import React from 'react';
 import Header from '@/app/ui/header/header';
-import { Locale } from '@/i18n-config';
-import { getDictionary } from '@/app/[lang]/dictionaries';
+import { routing } from '@/app/i18n/routing';
+import { notFound } from 'next/navigation';
+import { getMessages } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -26,20 +28,27 @@ export default async function RootLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ lang: Locale }>;
+  params: Promise<{ locale: string }>;
 }>) {
-  const { lang } = await params;
-  const dictionary = await getDictionary(lang);
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as any)) {
+    notFound();
+  }
+
+  const messages = await getMessages();
 
   return (
-    <html lang={(await params).lang}>
+    <html lang={locale}>
       <body className={`${geistSans.variable} ${geistMono.variable} bg-black antialiased`}>
         <div className="absolute inset-0 h-full bg-[url('/background-main-img.png')] bg-cover">
           <div className='absolute inset-0 bg-black opacity-50'></div>{' '}
         </div>
         <div className='relative z-10'>
-          <Header dictionary={dictionary.header} locale={lang} />
-          <main className='text-white'>{children}</main>
+          <NextIntlClientProvider messages={messages}>
+            <Header locale={locale} />
+            <main className='text-white'>{children}</main>
+          </NextIntlClientProvider>
         </div>
       </body>
     </html>

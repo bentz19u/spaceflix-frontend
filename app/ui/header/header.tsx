@@ -1,16 +1,12 @@
 import { cookie } from '@/app/ui/fonts';
-import Link from 'next/link';
-import { getDictionary } from '@/app/[lang]/dictionaries';
 import LanguagesSelector from '@/app/ui/header/languages-selector';
 import cn from '@/app/lib/cn';
+import { getTranslations } from 'next-intl/server';
+import { Link } from '@/app/i18n/routing';
 
-export default async function Header({
-  dictionary,
-  locale,
-}: {
-  dictionary: Awaited<ReturnType<typeof getDictionary>>['header'];
-  locale: string;
-}) {
+export default async function Header({ locale }: { locale: string }) {
+  const t = await getTranslations();
+
   return (
     <header className={cn('fixed top-0 z-50 flex h-20 w-full bg-black/0 px-0', 'sm:px-5')}>
       <div
@@ -29,7 +25,7 @@ export default async function Header({
             href='/login'
             className='flex min-h-8 min-w-15 items-center justify-center rounded-lg bg-red-600 px-3'
           >
-            {dictionary.signIn}
+            {t('header.signIn')}
           </Link>
         </div>
       </div>
