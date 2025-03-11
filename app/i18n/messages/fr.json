@@ -2,6 +2,13 @@
   "header": {
     "signIn": "Connexion"
   },
+  "home": {
+    "title": "Films, séries et bien plus encore, en illimité",
+    "desc1": "Commence gratuitement (c'est juste pour s'entraîner après tout). Annulez à tout moment.",
+    "desc2": "Prêt à regarder ? Saisissez votre e-mail pour créer ou reprendre votre abonnement.",
+    "emailAddress": "Adresse email",
+    "getStarted": "Inscription"
+  },
   "login": {
     "signIn": "Connexion",
     "email": "Email",

@@ -2,6 +2,13 @@
   "header": {
     "signIn": "Sign In"
   },
+  "home": {
+    "title": "Unlimited movies, TV shows, and more",
+    "desc1": "Starts at FREE (it's for practice after all). Cancel anytime.",
+    "desc2": "Ready to watch? Enter your email to create or restart your membership.",
+    "emailAddress": "Email address",
+    "getStarted": "Get started"
+  },
   "login": {
     "signIn": "Sign In",
     "email": "Email",

@@ -4,8 +4,12 @@ import cn from '@/app/lib/cn';
 import { Link } from '@/app/i18n/routing';
 import ArrowRight from '@/app/assets/icons/arrow-right.svg';
 import React from 'react';
+import InputEmail from '@/app/ui/form/input-email';
+import { useTranslations } from 'next-intl';
 
 export default function HomeRegister() {
+  const t = useTranslations();
+
   return (
     <div className={cn('flex flex-col gap-5', 'sm:flex-row sm:gap-0')}>
       <div className='relative mr-2 h-14 w-full'>
@@ -28,7 +32,7 @@ export default function HomeRegister() {
             'peer-focus:top-5 peer-focus:-translate-y-4 peer-focus:scale-75'
           )}
         >
-          Email address
+          {t('home.emailAddress')}
         </label>
       </div>
       <Link
@@ -39,7 +43,7 @@ export default function HomeRegister() {
           'lg:min-w-56 lg:text-2xl'
         )}
       >
-        <span className={cn('mr-2', 'lg:mr-4')}>Get started</span>
+        <span className={cn('mr-2', 'lg:mr-4')}>{t('home.getStarted')}</span>
         <ArrowRight />
       </Link>
     </div>
