@@ -3,10 +3,10 @@
 import { FormEvent, useState } from 'react';
 import { clientAuthorizedFetcher } from '@/app/lib/client-authorized-fetch-lib';
 import { z } from 'zod';
-import FormInputError from '@/app/ui/form-input-error';
-import CheckboxCheck from '@/app/assets/icons/checkbox-check.svg';
-import cn from '@/app/lib/cn';
 import { useTranslations } from 'next-intl';
+import InputEmail from '@/app/ui/form/input-email';
+import InputPassword from '@/app/ui/form/input-password';
+import InputCheckbox from '@/app/ui/form/input-checkbox';
 
 export default function LoginForm() {
   const t = useTranslations();
@@ -76,67 +76,27 @@ export default function LoginForm() {
 
       <div className='flex flex-col'>
         <div className='relative mb-5'>
-          <input
-            type='text'
+          <InputEmail
             id='email'
-            name='email'
-            className={cn(
-              'peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white',
-              'focus:ring-2 focus:ring-white',
-              formErrors.email ? 'ring-2 ring-red-500' : ''
-            )}
-            defaultValue='daniel.bentz@test.com'
+            label={t('login.email')}
             placeholder=''
-            onBlur={handleBlur}
+            error={formErrors.email}
+            onBlurAction={handleBlur}
           />
-          <label
-            htmlFor='email'
-            className='absolute start-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500'
-          >
-            {t('login.email')}
-          </label>
-          {formErrors.email && <FormInputError errorMessage={formErrors.email} />}
         </div>
 
         <div className='relative mb-5'>
-          <input
-            type='password'
+          <InputPassword
             id='password'
-            name='password'
-            className={cn(
-              'peer block w-full appearance-none rounded-lg border-0 border-white bg-blue-950 px-2.5 pt-5 pb-2.5 text-sm text-white',
-              'focus:ring-2 focus:ring-white',
-              formErrors.password ? 'ring-2 ring-red-500' : ''
-            )}
-            defaultValue='password'
+            label={t('login.password')}
             placeholder=''
-            onBlur={handleBlur}
+            error={formErrors.password}
+            onBlurAction={handleBlur}
           />
-          <label
-            htmlFor='password'
-            className='absolute start-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 dark:text-gray-400 peer-focus:dark:text-blue-500'
-          >
-            {t('login.password')}
-          </label>
-          {formErrors.password && <FormInputError errorMessage={formErrors.password} />}
         </div>
 
-        <label htmlFor='rememberMe' className='mb-5 flex cursor-pointer items-center gap-2'>
-          <input
-            type='checkbox'
-            id='rememberMe'
-            name='rememberMe'
-            defaultChecked={true}
-            className='peer hidden'
-          />
-          <div
-            className='flex h-4 w-4 items-center justify-center rounded-sm border transition-colors duration-200 peer-checked:bg-white'
-            aria-hidden='true'
-          >
-            <CheckboxCheck className='text-black' />
-          </div>
-          {t('login.rememberMe')}
-        </label>
+        <InputCheckbox id='rememberMe' label={t('login.rememberMe')} />
+
         <button
           type='submit'
           className='min-h-10 cursor-pointer rounded-lg bg-red-600 transition-colors duration-200 disabled:bg-red-800'
