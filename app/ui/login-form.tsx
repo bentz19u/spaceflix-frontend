@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import InputEmail from '@/app/ui/form/input-email';
 import InputPassword from '@/app/ui/form/input-password';
 import InputCheckbox from '@/app/ui/form/input-checkbox';
+import cn from '@/app/lib/cn';
 
 export default function LoginForm() {
   const t = useTranslations();
@@ -67,7 +68,7 @@ export default function LoginForm() {
   }
 
   return (
-    <form id='login-form' onSubmit={handleSubmit} className='flex h-full flex-auto flex-col py-10'>
+    <form id='login-form' onSubmit={handleSubmit} className={cn('mx-2 flex flex-col', 'sm:py-10')}>
       <header className='mb-5 min-h-10'>{t('login.signIn')}</header>
 
       {errorMessage && (

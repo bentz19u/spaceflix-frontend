@@ -1,16 +1,23 @@
 import LoginForm from '@/app/ui/login-form';
 import cn from '@/app/lib/cn';
+import Header from '@/app/ui/header/header';
+import { getLocale } from 'next-intl/server';
 
 export default async function LoginPage() {
+  const locale = await getLocale();
+
   return (
-    <div className='flex justify-center pt-2 pt-20'>
-      <div
-        className={cn(
-          'h-[600px] min-w-full rounded-lg bg-neutral-900/90 px-3',
-          'sm:min-w-[400px] sm:px-10'
-        )}
-      >
-        <LoginForm />
+    <div className={cn('flex h-screen flex-col bg-black', 'sm:bg-transparent')}>
+      <Header locale={locale} />
+      <div className='flex justify-center'>
+        <div
+          className={cn(
+            'mt-20 flex min-w-full flex-col bg-black px-3',
+            'sm:h-[600px] sm:min-w-[400px] sm:rounded-lg sm:bg-neutral-900/90 sm:px-10'
+          )}
+        >
+          <LoginForm />
+        </div>
       </div>
     </div>
   );

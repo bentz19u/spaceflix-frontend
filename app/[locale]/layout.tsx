@@ -46,7 +46,6 @@ export default async function RootLayout({
         </div>
         <div className='relative z-10'>
           <NextIntlClientProvider messages={messages}>
-            <Header locale={locale} />
             <main className='text-white'>{children}</main>
           </NextIntlClientProvider>
         </div>
