@@ -3,7 +3,7 @@ import cn from '@/app/lib/cn';
 
 import HomeRegister from '@/app/ui/home-register';
 import { getLocale, getTranslations } from 'next-intl/server';
-import HomeHeader from '@/app/ui/header/home-header';
+import Header from '@/app/ui/header/header';
 
 export default async function Home() {
   const t = await getTranslations();
@@ -11,7 +11,7 @@ export default async function Home() {
 
   return (
     <>
-      <HomeHeader locale={locale} />
+      <Header locale={locale} />
       <div className='flex h-screen flex-col items-center justify-center'>
         <div className='absolute inset-0 bg-gradient-to-b from-transparent from-10% to-black'></div>
         <div className={cn('z-10 mx-auto flex max-w-sm flex-col px-5 text-center', 'lg:max-w-2xl')}>

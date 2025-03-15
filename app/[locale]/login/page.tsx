@@ -1,6 +1,6 @@
 import LoginForm from '@/app/ui/login-form';
 import cn from '@/app/lib/cn';
-import Header from '@/app/ui/header/header';
+import HeaderWithoutLogin from '@/app/ui/header/headerWithoutLogin';
 import { getLocale } from 'next-intl/server';
 
 export default async function LoginPage() {
@@ -8,7 +8,7 @@ export default async function LoginPage() {
 
   return (
     <div className={cn('flex h-screen flex-col bg-black', 'sm:bg-transparent')}>
-      <Header locale={locale} />
+      <HeaderWithoutLogin locale={locale} />
       <div className='flex justify-center'>
         <div
           className={cn(

@@ -8,7 +8,7 @@ interface InputPasswordProps {
   id: string;
   label: string;
   placeholder: string;
-  error: string | undefined;
+  error?: string | undefined;
   onBlurAction?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
 
@@ -16,11 +16,11 @@ export default function InputPassword({
   id,
   label,
   placeholder,
-  error,
+  error = undefined,
   onBlurAction = () => {},
 }: InputPasswordProps) {
   return (
-    <>
+    <div className='relative'>
       <input
         type='password'
         id={id}
@@ -30,7 +30,7 @@ export default function InputPassword({
           'focus:ring-2 focus:ring-white',
           error ? 'ring-2 ring-red-500' : ''
         )}
-        defaultValue='daniel.bentz@test.com'
+        defaultValue='password'
         placeholder={placeholder}
         onBlur={onBlurAction ?? (() => {})}
       />
@@ -41,6 +41,6 @@ export default function InputPassword({
         {label}
       </label>
       {error && <FormInputError errorMessage={error} />}
-    </>
+    </div>
   );
 }

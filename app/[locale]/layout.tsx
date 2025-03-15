@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
 import React from 'react';
-import Header from '@/app/ui/header/header';
+import HeaderWithoutLogin from '@/app/ui/header/headerWithoutLogin';
 import { routing } from '@/app/i18n/routing';
 import { notFound } from 'next/navigation';
 import { getMessages } from 'next-intl/server';

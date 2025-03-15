@@ -20,7 +20,7 @@ export default function InputEmail({
   onBlurAction = () => {},
 }: InputEmailProps) {
   return (
-    <>
+    <div className='relative'>
       <input
         type='text'
         id={id}
@@ -41,6 +41,6 @@ export default function InputEmail({
         {label}
       </label>
       {error && <FormInputError errorMessage={error} />}
-    </>
+    </div>
   );
 }

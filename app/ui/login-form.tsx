@@ -76,7 +76,7 @@ export default function LoginForm() {
       )}
 
       <div className='flex flex-col'>
-        <div className='relative mb-5'>
+        <div className='mb-5'>
           <InputEmail
             id='email'
             label={t('login.email')}
@@ -86,10 +86,10 @@ export default function LoginForm() {
           />
         </div>
 
-        <div className='relative mb-5'>
+        <div className='mb-5'>
           <InputPassword
             id='password'
-            label={t('login.password')}
+            label={t('common.password')}
             placeholder=''
             error={formErrors.password}
             onBlurAction={handleBlur}
