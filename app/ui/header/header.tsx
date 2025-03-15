@@ -1,7 +1,8 @@
-import { cookie } from '@/app/ui/fonts';
+import { Link } from '@/app/i18n/routing';
 import LanguagesSelector from '@/app/ui/header/languages-selector';
 import cn from '@/app/lib/cn';
 import { getTranslations } from 'next-intl/server';
+import { cookie } from '@/app/ui/fonts';
 
 export default async function Header({ locale }: { locale: string }) {
   const t = await getTranslations();
@@ -19,12 +20,15 @@ export default async function Header({ locale }: { locale: string }) {
           'sm:w-5xl'
         )}
       >
-        <div
-          id='header-logo'
-          className={cn(`${cookie.className} pl-5 text-3xl text-red-600`, 'sm:pl-0 sm:text-5xl')}
-        >
-          Spaceflix
-        </div>
+        <Link href='/'>
+          <div
+            id='header-logo'
+            className={cn(`${cookie.className} pl-5 text-3xl text-red-600`, 'sm:pl-0 sm:text-5xl')}
+          >
+            Spaceflix
+          </div>
+        </Link>
+
         <LanguagesSelector local={locale} />
       </div>
     </header>
