@@ -1,8 +1,14 @@
-import InputPassword from '@/app/ui/form/input-password';
-import { getTranslations } from 'next-intl/server';
+'use client';
 
-export default async function Page() {
-  const t = await getTranslations();
+import InputPassword from '@/app/ui/form/input-password';
+import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+
+export default function Page() {
+  const t = useTranslations();
+
+  const searchParams = useSearchParams();
+  const search = searchParams.get('email');
 
   return (
     <div className='flex h-full flex-col justify-between gap-2 py-20'>
@@ -14,7 +20,7 @@ export default async function Page() {
 
       <div className='mb-2'>
         <p>Email</p>
-        <p className='font-semibold'>Email</p>
+        <p className='font-semibold'>{search}</p>
       </div>
 
       <InputPassword

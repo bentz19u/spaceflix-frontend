@@ -1,14 +1,29 @@
 'use client';
 
 import cn from '@/app/lib/cn';
-import { Link } from '@/app/i18n/routing';
 import ArrowRight from '@/app/assets/icons/arrow-right.svg';
-import React from 'react';
-import InputEmail from '@/app/ui/form/input-email';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/app/i18n/routing';
 
 export default function HomeRegister() {
   const t = useTranslations();
+  const [href, setHref] = useState('');
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const email = encodeURIComponent(event.target.value);
+    const newHref = `/register?email=${email}`;
+    setHref(newHref);
+  };
+
+  useEffect(() => {
+    let newHref = '/register';
+    if (emailRef.current) {
+      newHref += `?email=${emailRef.current.value}`;
+    }
+    setHref(newHref);
+  }, []);
 
   return (
     <div className={cn('flex flex-col gap-5', 'sm:flex-row sm:gap-0')}>
@@ -23,6 +38,8 @@ export default function HomeRegister() {
           )}
           defaultValue='db.daniel.bentz@gmail.com'
           placeholder=''
+          ref={emailRef}
+          onChange={handleEmailChange}
         />
         <label
           htmlFor='email'
@@ -36,7 +53,7 @@ export default function HomeRegister() {
         </label>
       </div>
       <Link
-        href='/register'
+        href={href}
         className={cn(
           'mx-auto flex h-14 min-w-20 items-center justify-center rounded-lg bg-red-600 px-3 text-lg font-bold whitespace-nowrap',
           'sm:mx-0 sm:min-w-36',
