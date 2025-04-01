@@ -8,7 +8,7 @@ interface InputEmailProps {
   id: string;
   label: string;
   placeholder: string;
-  error: string | undefined;
+  error?: string | undefined;
   onBlurAction?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
 
@@ -16,7 +16,7 @@ export default function InputEmail({
   id,
   label,
   placeholder,
-  error,
+  error = undefined,
   onBlurAction = () => {},
 }: InputEmailProps) {
   return (

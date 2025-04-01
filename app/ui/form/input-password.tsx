@@ -30,7 +30,6 @@ export default function InputPassword({
           'focus:ring-2 focus:ring-white',
           error ? 'ring-2 ring-red-500' : ''
         )}
-        defaultValue='password'
         placeholder={placeholder}
         onBlur={onBlurAction ?? (() => {})}
       />

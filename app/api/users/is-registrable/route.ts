@@ -1,4 +1,4 @@
-export interface isRegistrableResponseDTO {
+export interface IsRegistrableResponseDTO {
   isAvailable: boolean;
   canActivate: boolean;
 }
@@ -18,7 +18,7 @@ export async function GET(req: Request) {
     method: 'GET',
   });
 
-  const data = (await response.json()) as isRegistrableResponseDTO;
+  const data = (await response.json()) as IsRegistrableResponseDTO;
 
   return new Response(JSON.stringify(data), {
     status: 200,
