@@ -18,6 +18,14 @@
     "newToSpaceflix": "Nouveau sur Spaceflix?",
     "signUpNow": "S'inscrire."
   },
+  "register": {
+    "title1": "Créez un mot de passe pour commencer votre adhésion",
+    "title2": "Rejoindre Spaceflix est facile.",
+    "desc1": "Encore quelques étapes et c'est terminé !",
+    "desc2": "Nous détestons aussi la paperasse.",
+    "agreeCheckbox": "Oui, je consens à la collecte et à l'utilisation de mes informations personnelles conformément à [REDACTED]",
+    "agreeAndSubmit": "Accepter et continuer"
+  },
   "common": {
     "password": "Mot de passe",
     "next": "Suivant"

@@ -18,6 +18,14 @@
     "newToSpaceflix": "New to Spaceflix?",
     "signUpNow": "Sign up now."
   },
+  "register": {
+    "title1": "Create a password to start your membership",
+    "title2": "Joining Spaceflix is easy.",
+    "desc1": "Just a few more steps and you are done!",
+    "desc2": "We hate paperwork, too.",
+    "agreeCheckbox": "Yes, I consent to collection and use of my personal information in according with [REDACTED]",
+    "agreeAndSubmit": "Agree and Next"
+  },
   "common": {
     "password": "Password",
     "next": "Next"

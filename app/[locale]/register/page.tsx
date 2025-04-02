@@ -40,12 +40,12 @@ export default function Page() {
   return (
     <div className='flex h-full max-w-[350px] flex-col justify-between gap-3 py-20'>
       <p className='font-semibold'>Step 1 of 3</p>
-      <p className='text-2xl font-bold'>Create a password to start your membership</p>
-      <p className='text-2xl font-bold'>Joining Spaceflix is easy.</p>
+      <p className='text-2xl font-bold'>{t('register.title1')}</p>
+      <p className='text-2xl font-bold'>{t('register.title2')}</p>
 
       <p className='my-2'>
-        Just a few more steps and you are done!
-        <br /> We hate paperwork, too.
+        {t('register.desc1')}
+        <br /> {t('register.desc2')}
       </p>
 
       <InputEmail
@@ -64,19 +64,13 @@ export default function Page() {
         // onBlurAction={handleBlur}
       />
 
-      <InputCheckbox
-        id='aggreeData'
-        // label=''
-        label={
-          'Yes, I consent to collection and use of my personal information in according with [REDACTED]'
-        }
-      />
+      <InputCheckbox id='aggreeData' label={t('register.agreeCheckbox')} />
 
       <button
         type='submit'
         className='min-h-10 cursor-pointer rounded-lg bg-red-600 transition-colors duration-200 disabled:bg-red-800'
       >
-        {t('common.next')}
+        {t('register.agreeAndSubmit')}
       </button>
     </div>
   );
