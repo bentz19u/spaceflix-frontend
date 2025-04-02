@@ -13,12 +13,14 @@ export default async function Header({ locale }: { locale: string }) {
         id='header-content'
         className='mx-auto flex flex-row content-center items-center justify-between'
       >
-        <div
-          id='header-logo'
-          className={cn(`${cookie.className} pl-5 text-3xl text-red-600`, 'sm:pl-0 sm:text-5xl')}
-        >
-          Spaceflix
-        </div>
+        <Link href='/'>
+          <div
+            id='header-logo'
+            className={cn(`${cookie.className} pl-5 text-3xl text-red-600`, 'sm:pl-0 sm:text-5xl')}
+          >
+            Spaceflix
+          </div>
+        </Link>
         <div className={cn('flex flex-row pr-5', 'sm:pr-0')}>
           <LanguagesSelector local={locale} />
           <Link
