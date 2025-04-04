@@ -5,9 +5,21 @@ import { useTranslations } from 'next-intl';
 import InputEmail from '@/app/ui/form/input-email';
 import InputCheckbox from '@/app/ui/form/input-checkbox';
 import { FormEvent, useState } from 'react';
-import { z } from 'zod';
+import { z, ZodSchema } from 'zod';
 import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/app/ui/utils/loading-spinner';
+import formatZodFormErrors from '@/app/ui/errors/format-zod-form-errors';
+import { ErrorEnum } from '@/app/ui/errors/global-backend-api-response';
+
+function doFormValidation(formData: FormData, formSchema: ZodSchema) {
+  const data = {
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
+  };
+
+  const result = formSchema.safeParse(data);
+  return formatZodFormErrors(result);
+}
 
 export default function Page() {
   const t = useTranslations();
@@ -16,11 +28,16 @@ export default function Page() {
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const searchParams = useSearchParams();
+  const searchEmail = searchParams.get('email');
+
   const emailSchema = z.string().email({ message: t('login.emailError') });
   const passwordSchema = z.string().min(8, t('login.passwordError'));
 
-  const searchParams = useSearchParams();
-  const searchEmail = searchParams.get('email');
+  const formSchema = z.object({
+    email: emailSchema,
+    password: passwordSchema,
+  });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,6 +45,14 @@ export default function Page() {
 
     try {
       const formData = new FormData(event.currentTarget);
+      const validation = doFormValidation(formData, formSchema);
+      if (ErrorEnum.ERRORS in validation) {
+        setFormErrors(validation.errors ?? {});
+        return;
+      }
+
+      setFormErrors({});
+
       const email = formData.get('email');
       const password = formData.get('password');
 
