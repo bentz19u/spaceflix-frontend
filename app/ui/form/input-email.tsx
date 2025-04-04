@@ -8,6 +8,7 @@ interface InputEmailProps {
   id: string;
   label: string;
   placeholder: string;
+  defaultValue?: string | undefined;
   error?: string | undefined;
   onBlurAction?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
@@ -16,6 +17,7 @@ export default function InputEmail({
   id,
   label,
   placeholder,
+  defaultValue = undefined,
   error = undefined,
   onBlurAction = () => {},
 }: InputEmailProps) {
@@ -30,8 +32,8 @@ export default function InputEmail({
           'focus:ring-2 focus:ring-white',
           error ? 'ring-2 ring-red-500' : ''
         )}
-        defaultValue='daniel.bentz@test.com'
         placeholder={placeholder}
+        defaultValue={defaultValue}
         onBlur={onBlurAction ?? (() => {})}
       />
       <label

@@ -8,6 +8,7 @@ import InputEmail from '@/app/ui/form/input-email';
 import InputPassword from '@/app/ui/form/input-password';
 import InputCheckbox from '@/app/ui/form/input-checkbox';
 import cn from '@/app/lib/cn';
+import LoadingSpinner from '@/app/ui/utils/loading-spinner';
 
 export default function LoginForm() {
   const t = useTranslations();
@@ -104,11 +105,7 @@ export default function LoginForm() {
           disabled={isLoading}
           aria-busy={isLoading}
         >
-          {isLoading ? (
-            <div className='mx-auto h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
-          ) : (
-            `${t('login.signIn')}`
-          )}
+          {isLoading ? <LoadingSpinner /> : `${t('login.signIn')}`}
         </button>
       </div>
 
