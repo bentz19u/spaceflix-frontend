@@ -1,7 +1,7 @@
 export async function POST(req: Request) {
   const { email, password } = await req.json();
 
-  const response = await fetch('http://localhost:3000/users/step1', {
+  const response = await fetch(process.env.NEXT_BACKEND_URL + '/users/step1', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

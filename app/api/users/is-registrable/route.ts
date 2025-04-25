@@ -14,9 +14,12 @@ export async function GET(req: Request) {
     });
   }
 
-  const response = await fetch('http://localhost:3000/users/is-registrable?email=' + email, {
-    method: 'GET',
-  });
+  const response = await fetch(
+    process.env.NEXT_BACKEND_URL + '/users/is-registrable?email=' + email,
+    {
+      method: 'GET',
+    }
+  );
 
   const data = (await response.json()) as IsRegistrableResponseDTO;
 

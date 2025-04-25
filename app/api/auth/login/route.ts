@@ -9,7 +9,7 @@ export interface LoginResponseDTO {
 export async function POST(req: Request) {
   const { email, password, rememberMe } = await req.json();
 
-  const response = await fetch('http://localhost:3000/login', {
+  const response = await fetch(process.env.NEXT_BACKEND_URL + '/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
