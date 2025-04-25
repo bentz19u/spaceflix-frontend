@@ -13,7 +13,6 @@ export async function POST(req: Request) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      remote_addr: '100.250.240.160',
     },
     body: JSON.stringify({
       email,
