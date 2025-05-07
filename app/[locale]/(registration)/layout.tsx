@@ -3,7 +3,7 @@ import { getLocale } from 'next-intl/server';
 import cn from '@/app/lib/cn';
 import Header from '@/app/ui/header/header';
 
-export default async function RegisterLayout({ children }: PropsWithChildren) {
+export default async function RegistrationLayout({ children }: PropsWithChildren) {
   const locale = await getLocale();
 
   return (

@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import LoadingSpinner from '@/app/ui/utils/loading-spinner';
 import formatZodFormErrors from '@/app/ui/errors/format-zod-form-errors';
 import { ErrorEnum } from '@/app/ui/errors/global-backend-api-response';
+import { useRegistration } from '@/app/context/registration-context';
 
 function doFormValidation(formData: FormData, formSchema: ZodSchema) {
   const data = {
@@ -23,6 +24,7 @@ function doFormValidation(formData: FormData, formSchema: ZodSchema) {
 
 export default function Page() {
   const t = useTranslations();
+  const { setFormData } = useRegistration();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
@@ -53,8 +55,8 @@ export default function Page() {
 
       setFormErrors({});
 
-      const email = formData.get('email');
-      const password = formData.get('password');
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
 
       const response = await fetch('/api/users/step1', {
         method: 'POST',
@@ -64,7 +66,8 @@ export default function Page() {
 
       if (response.ok) {
         setErrorMessage(null);
-        // router.push('/profile');
+        setFormData({ email, password });
+        // router.push('/register/step2');
       } else {
         setErrorMessage('Incorrect email or password');
       }
