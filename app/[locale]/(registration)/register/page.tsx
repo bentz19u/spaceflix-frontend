@@ -1,7 +1,7 @@
 'use client';
 
 import InputPassword from '@/app/ui/form/input-password';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import InputEmail from '@/app/ui/form/input-email';
 import InputCheckbox from '@/app/ui/form/input-checkbox';
 import { FormEvent, useState } from 'react';
@@ -11,6 +11,8 @@ import LoadingSpinner from '@/app/ui/utils/loading-spinner';
 import formatZodFormErrors from '@/app/ui/errors/format-zod-form-errors';
 import { ErrorEnum } from '@/app/ui/errors/global-backend-api-response';
 import { useRegistration } from '@/app/context/registration-context';
+import { useRouter } from 'next/navigation';
+import { createLocalizedPath } from '@/app/lib/url';
 
 function doFormValidation(formData: FormData, formSchema: ZodSchema) {
   const data = {
@@ -22,9 +24,11 @@ function doFormValidation(formData: FormData, formSchema: ZodSchema) {
   return formatZodFormErrors(result);
 }
 
-export default function Page() {
+export default function Register() {
   const t = useTranslations();
   const { setFormData } = useRegistration();
+  const router = useRouter();
+  const locale = useLocale();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
@@ -67,7 +71,8 @@ export default function Page() {
       if (response.ok) {
         setErrorMessage(null);
         setFormData({ email, password });
-        // router.push('/register/step2');
+        const url = createLocalizedPath(locale, '/register/step2');
+        router.push(url);
       } else {
         setErrorMessage('Incorrect email or password');
       }
