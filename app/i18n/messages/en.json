@@ -26,6 +26,12 @@
     "agreeCheckbox": "Yes, I consent to collection and use of my personal information in according with [REDACTED]",
     "agreeAndSubmit": "Agree and Next"
   },
+  "step2": {
+    "title": "Choose your plan",
+    "desc1": "No commitments, cancel anytime.",
+    "desc2": "Endless entertainment for one low price.",
+    "desc3": "Enjoy Netflix on all your devices."
+  },
   "common": {
     "password": "Password",
     "next": "Next"

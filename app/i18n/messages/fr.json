@@ -26,6 +26,12 @@
     "agreeCheckbox": "Oui, je consens à la collecte et à l'utilisation de mes informations personnelles conformément à [REDACTED]",
     "agreeAndSubmit": "Accepter et continuer"
   },
+  "step2": {
+    "title": "Choisissez votre forfait",
+    "desc1": "Aucun engagement, annulez à tout moment.",
+    "desc2": "Divertissement illimité pour un prix abordable.",
+    "desc3": "Profitez de Netflix sur tous vos appareils."
+  },
   "common": {
     "password": "Mot de passe",
     "next": "Suivant"
